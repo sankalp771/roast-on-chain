@@ -3,7 +3,9 @@
     "allow": [
       "Bash(cd /c/Users/duves/Documents/SelfLearning/Monad/roast-arena/frontend && npx tsc --noEmit 2>&1)",
       "Bash(cd:*)",
-      "Bash(powershell.exe:*)"
+      "Bash(powershell.exe:*)",
+      "Bash(netstat -ano)",
+      "Bash(xargs -I{} powershell.exe -Command \"Stop-Process -Id {} -Force\")"
     ]
   }
 }

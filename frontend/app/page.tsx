@@ -9,18 +9,21 @@ import { getRecentRoastsFromDB, submitChallengeContent, uploadMedia, type RoastI
 import { useCountdown, formatCountdown } from "@/lib/useCountdown";
 
 function Countdown({ openUntil, voteUntil, state }: { openUntil: number; voteUntil: number; state: string }) {
-  // DB state never transitions to "VOTING" (listener doesn't update it on VoteCast).
-  // Derive the correct countdown target from timestamps instead.
   const now = Math.floor(Date.now() / 1000);
-  const target =
-    state === "SETTLED" || state === "CANCELLED" ? 0
-    : now < openUntil ? openUntil   // roasting window — counts down to 3-min mark
-    : voteUntil;                     // voting window   — counts down to 7-min mark
+  const isFinished = state === "SETTLED" || state === "CANCELLED";
+  const inRoastWindow = !isFinished && now < openUntil;
+  const target = isFinished ? 0 : inRoastWindow ? openUntil : voteUntil;
   const secs = useCountdown(target);
-  if (state === "SETTLED" || state === "CANCELLED") return <span className="text-zinc-600">—</span>;
+
+  if (isFinished) return <span className="text-zinc-600">—</span>;
   return (
-    <span className={secs < 30 ? "text-red-400 animate-pulse" : "text-zinc-300"}>
-      {formatCountdown(secs)}
+    <span className="flex items-center gap-1.5">
+      <span className={`text-xs font-semibold uppercase tracking-wide ${inRoastWindow ? "text-orange-500" : "text-yellow-400"}`}>
+        {inRoastWindow ? "Roast" : "Vote"}
+      </span>
+      <span className={secs < 30 ? "text-red-400 animate-pulse" : "text-zinc-300"}>
+        {formatCountdown(secs)}
+      </span>
     </span>
   );
 }

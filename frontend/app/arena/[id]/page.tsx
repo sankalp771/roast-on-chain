@@ -152,22 +152,34 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
       setWinners(wins);
 
       if (parts.length > 0) {
-        const counts: bigint[] = Array.from(await c.getVoteCounts(roastId, parts));
-        const map: Record<string, number> = {};
-        parts.forEach((addr: string, i: number) => {
-          map[addr.toLowerCase()] = Number(counts[i]);
-        });
-        setVoteCounts(map);
+        try {
+          const counts: bigint[] = Array.from(await c.getVoteCounts(roastId, parts));
+          const map: Record<string, number> = {};
+          parts.forEach((addr: string, i: number) => {
+            map[addr.toLowerCase()] = Number(counts[i]);
+          });
+          setVoteCounts(map);
+        } catch {
+          // Transient RPC inconsistency (QuickNode load balancing) — self-heals on next poll
+        }
       }
 
       if (address) {
-        const [joined, voted, winner, clRoaster, clVoter] = await Promise.all([
+        // allSettled so one RPC hiccup doesn't crash the whole poll cycle
+        const settled = await Promise.allSettled([
           c.hasJoined(roastId, address),
           c.hasVoted(roastId, address),
           c.isWinner(roastId, address),
           c.hasClaimedRoaster(roastId, address),
           c.hasClaimedVoter(roastId, address),
         ]);
+        const val = <T,>(i: number, fallback: T): T =>
+          settled[i].status === "fulfilled" ? (settled[i] as PromiseFulfilledResult<T>).value : fallback;
+        const joined    = val(0, false);
+        const voted     = val(1, false);
+        const winner    = val(2, false);
+        const clRoaster = val(3, false);
+        const clVoter   = val(4, false);
         setHasJoined(joined);
         setHasVoted(voted);
         setIAmWinner(winner);
@@ -186,7 +198,11 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
         }
       }
     } catch (err) {
-      console.error("loadChainData:", err);
+      // Suppress transient CALL_EXCEPTION errors from QuickNode load balancing —
+      // they self-heal on the next poll cycle (every 4s). Log everything else.
+      if ((err as { code?: string })?.code !== "CALL_EXCEPTION") {
+        console.error("loadChainData:", err);
+      }
     }
   }, [roastId, address, readContract, getProvider]);
 
