@@ -56,13 +56,13 @@ function PhaseBanner({
     : "Arena cancelled — refunds available";
 
   return (
-    <div className="border border-zinc-800 rounded-lg p-5 mb-6 flex items-center justify-between">
+    <div className="skeuo-panel p-5 mb-6 flex items-center justify-between">
       <div>
         <div className={`text-xl font-bold ${color}`}>{label}</div>
-        <div className="text-zinc-500 text-sm mt-1">{phaseText}</div>
+        <div className="muted-text text-sm mt-1">{phaseText}</div>
       </div>
       {(effectiveState === RoastState.OPEN || effectiveState === RoastState.VOTING) && (
-        <div className={`text-3xl font-bold tabular-nums ${secs < 30 ? "text-red-400 animate-pulse" : "text-white"}`}>
+        <div className={`text-3xl font-bold tabular-nums ${secs < 30 ? "text-red-300 pulse-soft" : "text-slate-100"}`}>
           {formatCountdown(secs)}
         </div>
       )}
@@ -108,7 +108,7 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
 
   const getProvider = useCallback(() =>
     new ethers.JsonRpcProvider(
-      process.env.NEXT_PUBLIC_MONAD_RPC || "http://127.0.0.1:8545"
+      process.env.NEXT_PUBLIC_MONAD_RPC || "https://testnet-rpc.monad.xyz"
     ), []);
 
   const readContract = useCallback(() =>
@@ -419,22 +419,22 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
       <Navbar />
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-8">
 
-        <Link href="/" className="text-zinc-600 hover:text-white text-sm mb-6 inline-block">
+        <Link href="/" className="muted-text hover:text-slate-100 text-sm mb-6 inline-block transition-colors">
           ← All Arenas
         </Link>
 
-        <h1 className="text-3xl font-bold mb-1">Arena <span className="text-orange-500">#{roastId}</span></h1>
-        <p className="text-zinc-600 text-sm mb-1">
+        <h1 className="text-3xl font-bold mb-1 tracking-tight">Arena <span className="brand-accent">#{roastId}</span></h1>
+        <p className="muted-text text-sm mb-1">
           {Number(roast.participantCount)} roasters · {Number(roast.totalVotes)} votes
         </p>
-        <p className="text-zinc-600 text-xs mb-6">
+        <p className="muted-text text-xs mb-6">
           Roaster stake: {fmt(roast.roastStake)} · Vote stake: {fmt(roast.voteStake)}
         </p>
 
         {/* Challenge subject — what this arena is about */}
         {challengeContent && (
-          <div className="border border-orange-500/30 bg-orange-500/5 rounded-xl p-5 mb-6">
-            <p className="text-orange-400 text-xs uppercase tracking-widest mb-2">What we&apos;re roasting</p>
+          <div className="skeuo-panel p-5 mb-6">
+            <p className="section-title mb-2">What we&apos;re roasting</p>
             <h2 className="text-white font-bold text-xl mb-2">{challengeContent.title}</h2>
             {challengeContent.description && (
               <p className="text-zinc-400 text-sm mb-3 whitespace-pre-wrap">{challengeContent.description}</p>
@@ -469,26 +469,26 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
         <PhaseBanner state={storedState} openUntil={openUntilReal} voteUntil={voteUntilReal} />
 
         {/* Pool sizes */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="border border-zinc-800 rounded-lg p-4 text-center">
-            <div className="text-zinc-500 text-xs uppercase tracking-widest mb-1">Roaster Pool</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          <div className="skeuo-panel-soft p-4 text-center">
+            <div className="section-title mb-1">Roaster Pool</div>
             <div className="text-white font-bold text-lg">{fmt(roast.roasterPool)}</div>
             {isSettled && roast.numWinners > 0n && (
-              <div className="text-zinc-500 text-xs mt-1">{fmt(roasterShare)} / winner</div>
+              <div className="muted-text text-xs mt-1">{fmt(roasterShare)} / winner</div>
             )}
           </div>
-          <div className="border border-zinc-800 rounded-lg p-4 text-center">
-            <div className="text-zinc-500 text-xs uppercase tracking-widest mb-1">Voter Pool</div>
+          <div className="skeuo-panel-soft p-4 text-center">
+            <div className="section-title mb-1">Voter Pool</div>
             <div className="text-white font-bold text-lg">{fmt(roast.voterPool)}</div>
             {isSettled && roast.winnerVoterCount > 0n && (
-              <div className="text-zinc-500 text-xs mt-1">{fmt(voterShare)} / winner voter</div>
+              <div className="muted-text text-xs mt-1">{fmt(voterShare)} / winner voter</div>
             )}
           </div>
         </div>
 
         {/* Winner banner */}
         {isSettled && winners.length > 0 && (
-          <div className="bg-orange-950 border border-orange-500 rounded-lg p-5 mb-6">
+          <div className="skeuo-panel p-5 mb-6">
             <div className="text-orange-400 text-xs uppercase tracking-widest mb-2 text-center">
               {winners.length === 1 ? "Winner" : `${winners.length}-Way Tie`}
             </div>
@@ -502,18 +502,18 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
         )}
 
         {isCancelled && (
-          <div className="bg-red-950 border border-red-700 rounded-lg p-5 mb-6 text-center text-red-400">
+          <div className="skeuo-panel p-5 mb-6 text-center text-red-300">
             Arena cancelled — not enough participants or no votes cast.
           </div>
         )}
 
-        {error  && <p className="text-red-400 text-sm mb-4">{error}</p>}
-        {txMsg  && <p className="text-green-400 text-sm mb-4">{txMsg}</p>}
+        {error  && <p className="text-red-300 text-sm mb-4">{error}</p>}
+        {txMsg  && <p className="text-green-300 text-sm mb-4">{txMsg}</p>}
 
         {/* Claim / Refund buttons */}
         {isSettled && iAmWinner && !claimedRoaster && (
           <button onClick={handleClaimRoaster} disabled={claiming !== null}
-            className="w-full bg-yellow-600 hover:bg-yellow-500 disabled:opacity-50 text-white font-bold py-3 rounded-lg mb-3">
+            className="w-full skeuo-button text-white font-bold py-3 mb-3">
             {claiming === "roaster" ? "Claiming…" : `Claim Roaster Reward (${fmt(roasterShare)})`}
           </button>
         )}
@@ -523,7 +523,7 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
 
         {isSettled && hasVoted && iVotedRight && !claimedVoter && (
           <button onClick={handleClaimVoter} disabled={claiming !== null}
-            className="w-full bg-green-700 hover:bg-green-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg mb-3">
+            className="w-full skeuo-button skeuo-button-success text-white font-bold py-3 mb-3">
             {claiming === "voter" ? "Claiming…" : `Claim Voter Reward (${fmt(voterShare)})`}
           </button>
         )}
@@ -536,7 +536,7 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
 
         {isCancelled && (hasJoined || hasVoted) && (
           <button onClick={handleClaimRefund} disabled={claiming !== null}
-            className="w-full bg-zinc-700 hover:bg-zinc-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg mb-3">
+            className="w-full skeuo-button-secondary disabled:opacity-50 text-white font-bold py-3 mb-3">
             {claiming === "refund" ? "Claiming refund…" : "Claim Refund"}
           </button>
         )}
@@ -544,26 +544,26 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
         {/* Join button */}
         {canJoin && (
           <button onClick={handleJoin} disabled={joining}
-            className="w-full bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white font-bold py-3 rounded-lg mb-6">
+            className="w-full skeuo-button text-white font-bold py-3 mb-6">
             {joining ? "Joining…" : `Join Arena as Roaster (stake ${fmt(roast.roastStake)})`}
           </button>
         )}
 
         {/* Roast content — shown only if joined, OPEN window, and not yet submitted */}
         {canPost && (
-          <div className="mb-6 border border-zinc-800 rounded-lg p-4">
-            <p className="text-zinc-400 text-sm mb-3">Your roast (saved off-chain, linked to your wallet):</p>
+          <div className="mb-6 skeuo-panel-soft p-4">
+            <p className="soft-text text-sm mb-3">Your roast (saved off-chain, linked to your wallet):</p>
             <textarea
               value={myContent}
               onChange={(e) => setMyContent(e.target.value)}
               maxLength={500} rows={3}
               placeholder="Drop your roast here..."
-              className="w-full bg-zinc-900 border border-zinc-700 rounded p-3 text-white text-sm resize-none focus:outline-none focus:border-orange-500"
+              className="w-full input-surface p-3 text-sm resize-none"
             />
             <div className="flex justify-between items-center mt-2">
-              <span className="text-zinc-600 text-xs">{myContent.length}/500</span>
+              <span className="muted-text text-xs">{myContent.length}/500</span>
               <button onClick={handleSubmitContent} disabled={submittingContent || !myContent.trim()}
-                className="bg-zinc-700 hover:bg-zinc-600 disabled:opacity-50 text-white text-sm px-4 py-2 rounded">
+                className="skeuo-button-secondary disabled:opacity-50 text-white text-sm px-4 py-2">
                 {submittingContent ? "Saving…" : "Save Roast"}
               </button>
             </div>
@@ -572,25 +572,25 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
 
         {/* If already posted, show the submitted content with a note */}
         {hasJoined && effectiveState === RoastState.OPEN && alreadyPosted && (
-          <div className="mb-6 border border-zinc-700 rounded-lg p-4 bg-zinc-900/50">
-            <p className="text-zinc-500 text-xs mb-2 uppercase tracking-widest">Your roast (submitted)</p>
-            <p className="text-zinc-300 text-sm">{contentByAuthor[myAddr].content}</p>
+          <div className="mb-6 skeuo-panel-soft p-4">
+            <p className="section-title mb-2">Your roast (submitted)</p>
+            <p className="soft-text text-sm">{contentByAuthor[myAddr].content}</p>
           </div>
         )}
 
         {/* Settle button */}
         {canSettle && (
           <button onClick={handleSettle} disabled={settling}
-            className="w-full bg-blue-700 hover:bg-blue-600 disabled:opacity-50 text-white font-bold py-3 rounded-lg mb-6">
+            className="w-full skeuo-button-secondary text-white font-bold py-3 mb-6">
             {settling ? "Settling…" : "Settle Arena (Voting Closed)"}
           </button>
         )}
 
         {/* Participants / vote cards */}
-        <h2 className="text-zinc-500 text-xs uppercase tracking-widest mb-3">Roasters</h2>
+        <h2 className="section-title mb-3">Roasters</h2>
 
         {participants.length === 0 ? (
-          <p className="text-zinc-700 text-sm">No participants yet.</p>
+          <p className="muted-text text-sm">No participants yet.</p>
         ) : (
           <div className="space-y-4">
             {participants.map((addr) => {
@@ -604,30 +604,30 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
 
               return (
                 <div key={addr}
-                  className={`border rounded-lg p-4 ${isWin ? "border-orange-500 bg-orange-950/20" : "border-zinc-800"}`}>
+                  className={`skeuo-panel-soft p-4 ${isWin ? "ring-1 ring-orange-400/50" : ""}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-zinc-300 text-sm font-bold truncate">
+                        <span className="text-slate-100 text-sm font-bold truncate">
                           {isMe ? "You" : `${addr.slice(0, 6)}…${addr.slice(-4)}`}
                         </span>
-                        {isWin && <span className="text-orange-400 text-xs font-bold">WINNER</span>}
+                        {isWin && <span className="text-orange-300 text-xs font-bold">WINNER</span>}
                       </div>
 
                       {content ? (
-                        <p className="text-zinc-300 text-sm leading-relaxed">{content.content}</p>
+                        <p className="soft-text text-sm leading-relaxed">{content.content}</p>
                       ) : (
-                        <p className="text-zinc-700 text-sm italic">No roast submitted yet…</p>
+                        <p className="muted-text text-sm italic">No roast submitted yet…</p>
                       )}
 
                       {(effectiveState === RoastState.VOTING || isSettled) && (
                         <div className="mt-3">
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 bg-zinc-800 rounded-full h-1.5">
-                              <div className="bg-orange-500 h-1.5 rounded-full transition-all"
+                            <div className="flex-1 bg-slate-800/80 rounded-full h-1.5">
+                              <div className="bg-orange-400 h-1.5 rounded-full transition-all"
                                 style={{ width: `${pct}%` }} />
                             </div>
-                            <span className="text-zinc-400 text-xs w-12 text-right">
+                            <span className="soft-text text-xs w-12 text-right">
                               {votes} vote{votes !== 1 ? "s" : ""}
                             </span>
                           </div>
@@ -637,15 +637,15 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
 
                     {canVoteThis && (
                       <button onClick={() => handleVote(addr)} disabled={voting !== null}
-                        className="shrink-0 bg-zinc-800 hover:bg-orange-600 disabled:opacity-50 text-white text-sm px-4 py-2 rounded transition-all">
+                        className="shrink-0 skeuo-button-secondary disabled:opacity-50 text-white text-sm px-4 py-2 transition-all">
                         {voting === addr ? "Voting…" : `Vote (${roast ? fmt(roast.voteStake) : "…"})`}
                       </button>
                     )}
                     {canVote && isMe && (
-                      <span className="shrink-0 text-zinc-600 text-xs py-2">can&apos;t self-vote</span>
+                      <span className="shrink-0 muted-text text-xs py-2">can&apos;t self-vote</span>
                     )}
                     {hasVoted && effectiveState === RoastState.VOTING && (
-                      <span className="shrink-0 text-green-600 text-xs py-2">voted</span>
+                      <span className="shrink-0 text-green-300 text-xs py-2">voted</span>
                     )}
                   </div>
                 </div>
@@ -657,3 +657,9 @@ export default function ArenaPage({ params }: { params: Promise<{ id: string }> 
     </div>
   );
 }
+
+
+
+
+
+

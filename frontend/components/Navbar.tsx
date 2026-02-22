@@ -6,18 +6,18 @@ export default function Navbar() {
   const { address, isConnecting, isWrongNetwork, connect, switchNetwork } = useWallet();
 
   const short = address
-    ? `${address.slice(0, 6)}…${address.slice(-4)}`
+    ? `${address.slice(0, 6)}...${address.slice(-4)}`
     : null;
 
   return (
-    <nav className="border-b border-zinc-800 px-6 py-4 flex items-center justify-between">
-      <Link href="/" className="text-xl font-bold text-orange-500 tracking-widest">
-        ROAST<span className="text-white">ARENA</span>
+    <nav className="top-nav px-4 sm:px-6 py-4 flex items-center justify-between">
+      <Link href="/" className="brand-mark text-lg sm:text-xl">
+        <span className="brand-accent">ROAST</span><span className="text-slate-100">ARENA</span>
       </Link>
 
       <div className="flex items-center gap-4">
         {address && (
-          <Link href={`/profile/${address}`} className="text-zinc-400 hover:text-white text-sm">
+          <Link href={`/profile/${address}`} className="soft-text hover:text-slate-100 text-sm transition-colors">
             {short}
           </Link>
         )}
@@ -25,21 +25,21 @@ export default function Navbar() {
         {isWrongNetwork ? (
           <button
             onClick={switchNetwork}
-            className="bg-red-600 hover:bg-red-500 text-white text-sm px-4 py-2 rounded"
+            className="skeuo-button skeuo-button-danger text-sm px-4 py-2"
           >
             Switch to Monad
           </button>
         ) : address ? (
-          <span className="bg-zinc-800 text-green-400 text-sm px-4 py-2 rounded">
+          <span className="state-pill state-open">
             {short}
           </span>
         ) : (
           <button
             onClick={connect}
             disabled={isConnecting}
-            className="bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white text-sm px-4 py-2 rounded"
+            className="skeuo-button text-sm px-4 py-2"
           >
-            {isConnecting ? "Connecting…" : "Connect Wallet"}
+            {isConnecting ? "Connecting..." : "Connect Wallet"}
           </button>
         )}
       </div>

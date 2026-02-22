@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { useWallet } from "@/lib/useWallet";
-import { ROAST_ARENA_ABI, CONTRACT_ADDRESS, RoastState, STATE_LABEL, STATE_COLOR } from "@/lib/contract";
+import { ROAST_ARENA_ABI, CONTRACT_ADDRESS } from "@/lib/contract";
 import { getRecentRoastsFromDB, submitChallengeContent, uploadMedia, type RoastIndex } from "@/lib/api";
 import { useCountdown, formatCountdown } from "@/lib/useCountdown";
 
@@ -15,13 +15,13 @@ function Countdown({ openUntil, voteUntil, state }: { openUntil: number; voteUnt
   const target = isFinished ? 0 : inRoastWindow ? openUntil : voteUntil;
   const secs = useCountdown(target);
 
-  if (isFinished) return <span className="text-zinc-600">—</span>;
+  if (isFinished) return <span className="muted-text">-</span>;
   return (
     <span className="flex items-center gap-1.5">
       <span className={`text-xs font-semibold uppercase tracking-wide ${inRoastWindow ? "text-orange-500" : "text-yellow-400"}`}>
         {inRoastWindow ? "Roast" : "Vote"}
       </span>
-      <span className={secs < 30 ? "text-red-400 animate-pulse" : "text-zinc-300"}>
+      <span className={secs < 30 ? "text-red-300 pulse-soft" : "text-slate-300"}>
         {formatCountdown(secs)}
       </span>
     </span>
@@ -29,7 +29,7 @@ function Countdown({ openUntil, voteUntil, state }: { openUntil: number; voteUnt
 }
 
 export default function Home() {
-  const { address, signer, isWrongNetwork, connect, switchNetwork } = useWallet();
+  const { signer, isWrongNetwork, connect, switchNetwork } = useWallet();
   const [roasts, setRoasts]       = useState<RoastIndex[]>([]);
   const [loading, setLoading]     = useState(true);
   const [creating, setCreating]   = useState(false);
@@ -116,12 +116,12 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-10">
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-bold mb-3">
-            <span className="text-orange-500">Roast</span>Arena
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8 sm:py-10">
+        <div className="skeuo-panel text-center mb-8 sm:mb-10 px-6 py-8">
+          <h1 className="text-4xl sm:text-5xl font-bold mb-3 tracking-tight">
+            <span className="brand-accent">Roast</span>Arena
           </h1>
-          <p className="text-zinc-400 text-lg">
+          <p className="soft-text text-base sm:text-lg">
             3 min to roast. 4 min to vote. Chain decides the winner.
           </p>
         </div>
@@ -131,13 +131,13 @@ export default function Home() {
           {!showForm ? (
             <button
               onClick={() => { if (!signer) { connect(); } else { setShowForm(true); } }}
-              className="bg-orange-600 hover:bg-orange-500 text-white font-bold text-lg px-8 py-4 rounded-lg transition-all"
+              className="skeuo-button text-white font-bold text-lg px-8 py-4 w-full max-w-md"
             >
               + Create New Arena
             </button>
           ) : (
-            <div className="border border-zinc-700 rounded-xl p-6 w-full max-w-md space-y-4">
-              <h3 className="text-white font-bold text-lg">Create Arena</h3>
+            <div className="skeuo-panel p-6 w-full max-w-md space-y-4">
+              <h3 className="text-slate-100 font-bold text-lg">Create Arena</h3>
 
               <label className="block">
                 <span className="text-zinc-400 text-sm">What are we roasting? <span className="text-orange-500">*</span></span>
@@ -147,7 +147,7 @@ export default function Home() {
                   placeholder="e.g. My NFT project, this tweet, this dev..."
                   value={challengeTitle}
                   onChange={(e) => setChallengeTitle(e.target.value)}
-                  className="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white placeholder-zinc-600 focus:outline-none focus:border-orange-500"
+                  className="input-surface mt-1 w-full px-3 py-2 placeholder:text-slate-500"
                 />
                 <span className="text-zinc-600 text-xs">{challengeTitle.length}/100</span>
               </label>
@@ -160,7 +160,7 @@ export default function Home() {
                   placeholder="Add more context for the roasters..."
                   value={challengeDesc}
                   onChange={(e) => setChallengeDesc(e.target.value)}
-                  className="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white placeholder-zinc-600 focus:outline-none focus:border-orange-500 resize-none"
+                  className="input-surface mt-1 w-full px-3 py-2 placeholder:text-slate-500 resize-none"
                 />
                 <span className="text-zinc-600 text-xs">{challengeDesc.length}/500</span>
               </label>
@@ -228,8 +228,8 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="border-t border-zinc-800 pt-4">
-                <p className="text-zinc-500 text-xs mb-3 uppercase tracking-widest">Stake settings</p>
+              <div className="border-t border-slate-700 pt-4">
+                <p className="section-title mb-3">Stake settings</p>
               </div>
 
               <label className="block">
@@ -240,7 +240,7 @@ export default function Home() {
                   min="0.001"
                   value={roastStake}
                   onChange={(e) => setRoastStake(e.target.value)}
-                  className="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white focus:outline-none focus:border-orange-500"
+                  className="input-surface mt-1 w-full px-3 py-2"
                 />
               </label>
 
@@ -252,7 +252,7 @@ export default function Home() {
                   min="0.001"
                   value={voteStake}
                   onChange={(e) => setVoteStake(e.target.value)}
-                  className="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded px-3 py-2 text-white focus:outline-none focus:border-orange-500"
+                  className="input-surface mt-1 w-full px-3 py-2"
                 />
               </label>
 
@@ -265,7 +265,7 @@ export default function Home() {
                 <button
                   onClick={handleCreate}
                   disabled={creating}
-                  className="flex-1 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white font-bold py-2 rounded-lg"
+                  className="flex-1 skeuo-button text-white font-bold py-2"
                 >
                   {creating ? "Creating…" : "Create Arena"}
                 </button>
@@ -279,7 +279,7 @@ export default function Home() {
                     setMediaFile(null);
                     setMediaPreview(null);
                   }}
-                  className="px-4 py-2 text-zinc-400 hover:text-white border border-zinc-700 rounded-lg"
+                  className="px-4 py-2 skeuo-button-secondary"
                 >
                   Cancel
                 </button>
@@ -288,23 +288,23 @@ export default function Home() {
           )}
 
           {isWrongNetwork && (
-            <p className="text-yellow-400 text-sm">
+            <p className="text-yellow-300 text-sm">
               Wrong network.{" "}
-              <button onClick={switchNetwork} className="underline">Switch</button>
+              <button onClick={switchNetwork} className="underline hover:text-yellow-100 transition-colors">Switch</button>
             </p>
           )}
         </div>
 
-        {error && <p className="text-center text-red-400 mb-6 text-sm">{error}</p>}
+        {error && <p className="text-center text-red-300 mb-6 text-sm">{error}</p>}
 
-        <h2 className="text-zinc-500 text-xs uppercase tracking-widest mb-4">Recent Arenas</h2>
+        <h2 className="section-title mb-4">Recent Arenas</h2>
 
         {loading ? (
-          <p className="text-zinc-600 text-center py-10">Loading arenas…</p>
+          <p className="muted-text text-center py-10">Loading arenas…</p>
         ) : roasts.length === 0 ? (
-          <div className="text-center py-16 border border-dashed border-zinc-800 rounded-lg">
-            <p className="text-zinc-500 text-lg mb-2">No arenas yet.</p>
-            <p className="text-zinc-600 text-sm">Be the first to create one.</p>
+          <div className="skeuo-panel-soft text-center py-16">
+            <p className="soft-text text-lg mb-2">No arenas yet.</p>
+            <p className="muted-text text-sm">Be the first to create one.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -312,23 +312,23 @@ export default function Home() {
               <Link
                 key={r.roast_id}
                 href={`/arena/${r.roast_id}`}
-                className="block border border-zinc-800 hover:border-orange-500 rounded-lg px-5 py-4 transition-all"
+                className="block skeuo-panel-soft px-5 py-4 hover:translate-y-[-1px] transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-white font-bold">Arena #{r.roast_id}</span>
-                    <span className="text-zinc-600 text-sm ml-3">
+                    <span className="text-slate-100 font-bold">Arena #{r.roast_id}</span>
+                    <span className="muted-text text-sm ml-3">
                       by {r.creator_username || `${r.creator.slice(0, 6)}…`}
                     </span>
                   </div>
                   <div className="flex items-center gap-6 text-sm">
                     <Countdown openUntil={r.open_until} voteUntil={r.vote_until} state={r.state} />
-                    <span className={
-                      r.state === "OPEN"      ? "text-green-400"
-                      : r.state === "VOTING"  ? "text-yellow-400"
-                      : r.state === "SETTLED" ? "text-blue-400"
-                      : "text-red-400"
-                    }>
+                    <span className={`state-pill ${
+                      r.state === "OPEN" ? "state-open"
+                      : r.state === "VOTING" ? "state-voting"
+                      : r.state === "SETTLED" ? "state-settled"
+                      : "state-cancelled"
+                    }`}>
                       {r.state}
                     </span>
                   </div>
@@ -341,3 +341,8 @@ export default function Home() {
     </div>
   );
 }
+
+
+
+
+

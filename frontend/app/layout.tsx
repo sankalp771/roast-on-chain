@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Geist_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
+const display = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   title: "RoastArena",
@@ -11,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${mono.variable} font-mono bg-black text-white min-h-screen`}>
+    <html lang="en">
+      <body className={`${display.variable} ${mono.variable} app-shell min-h-screen`}>
         {children}
       </body>
     </html>
