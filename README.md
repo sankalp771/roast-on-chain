@@ -2,8 +2,9 @@
 
 **Onchain roast battles on Monad Testnet.** Create an arena, stake MON, drop your best burn, and let the crowd vote. Losing voters fund the winners — prediction market meets roast comedy.
 
-Live at: [roast-on-chain.onrender.com](https://roast-on-chain.onrender.com) · Contract: [`0xAa9381a6C0717aF8345C36477D09B76CeF2A05F4`](https://testnet.monadexplorer.com/address/0xAa9381a6C0717aF8345C36477D09B76CeF2A05F4) on Monad Testnet
+Live at: (https://roast-on-chain.vercel.app/) · Contract: [`0xAa9381a6C0717aF8345C36477D09B76CeF2A05F4`](https://testnet.monadexplorer.com/address/0xAa9381a6C0717aF8345C36477D09B76CeF2A05F4) on Monad Testnet
 
+Built by Duvesh & Sankalp
 ---
 
 ## How It Works
